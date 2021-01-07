@@ -1,52 +1,46 @@
 {
-    "name": "HighScore",
-    "fields": [
-        {
-            "fieldName": "score",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "achievedDt",
-            "fieldType": "Instant",
-            "fieldValidateRules": [
-                "required"
-            ]
-        }
-    ],
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "otherEntityName": "player",
-            "otherEntityRelationshipName": "highScore",
-            "relationshipValidateRules": "required",
-            "relationshipName": "player",
-            "otherEntityField": "id",
-            "ownerSide": true
-        },
-        {
-            "relationshipType": "one-to-one",
-            "otherEntityName": "level",
-            "otherEntityRelationshipName": "highScore",
-            "relationshipValidateRules": "required",
-            "relationshipName": "level",
-            "otherEntityField": "id",
-            "ownerSide": true
-        }
-    ],
-    "changelogDate": "20200224161006",
-    "entityTableName": "high_score",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no",
-    "jpaMetamodelFiltering": false,
-    "fluentMethods": true,
-    "readOnly": false,
-    "clientRootFolder": "",
-    "applications": [
-        "gateway",
-        "game"
-    ]
+  "name": "HighScore",
+  "fields": [
+    {
+      "fieldName": "score",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "achievedDt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "highScore",
+      "relationshipValidateRules": "required",
+      "relationshipName": "player",
+      "otherEntityField": "id",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "level",
+      "otherEntityRelationshipName": "highScore",
+      "relationshipValidateRules": "required",
+      "relationshipName": "level",
+      "otherEntityField": "id",
+      "ownerSide": true
+    }
+  ],
+  "changelogDate": "20210107191815",
+  "entityTableName": "high_score",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["gateway", "game"]
 }

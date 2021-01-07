@@ -14,7 +14,7 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "high_score")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HighScore implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +41,7 @@ public class HighScore implements Serializable {
     @JoinColumn(unique = true)
     private Level level;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -101,7 +101,7 @@ public class HighScore implements Serializable {
     public void setLevel(Level level) {
         this.level = level;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -119,6 +119,7 @@ public class HighScore implements Serializable {
         return 31;
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
         return "HighScore{" +

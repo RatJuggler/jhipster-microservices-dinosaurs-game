@@ -14,7 +14,7 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "player")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public class Player implements Serializable {
     @Column(name = "created_dt", nullable = false)
     private Instant createdDt;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -118,7 +118,7 @@ public class Player implements Serializable {
     public void setCreatedDt(Instant createdDt) {
         this.createdDt = createdDt;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -136,6 +136,7 @@ public class Player implements Serializable {
         return 31;
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
         return "Player{" +

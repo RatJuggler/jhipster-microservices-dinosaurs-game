@@ -5,27 +5,21 @@ import com.rj.dinosaurs.game.domain.HighScore;
 import com.rj.dinosaurs.game.domain.Player;
 import com.rj.dinosaurs.game.domain.Level;
 import com.rj.dinosaurs.game.repository.HighScoreRepository;
-import com.rj.dinosaurs.game.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
-
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.rj.dinosaurs.game.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for the {@link HighScoreResource} REST controller.
  */
 @SpringBootTest(classes = GameApp.class)
+@AutoConfigureMockMvc
+@WithMockUser
 public class HighScoreResourceIT {
 
     private static final Integer DEFAULT_SCORE = 1;
@@ -47,35 +43,12 @@ public class HighScoreResourceIT {
     private HighScoreRepository highScoreRepository;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-    @Autowired
-    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-    @Autowired
-    private ExceptionTranslator exceptionTranslator;
-
-    @Autowired
     private EntityManager em;
 
     @Autowired
-    private Validator validator;
-
     private MockMvc restHighScoreMockMvc;
 
     private HighScore highScore;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        final HighScoreResource highScoreResource = new HighScoreResource(highScoreRepository);
-        this.restHighScoreMockMvc = MockMvcBuilders.standaloneSetup(highScoreResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter)
-            .setValidator(validator).build();
-    }
 
     /**
      * Create an entity for this test.
@@ -151,10 +124,9 @@ public class HighScoreResourceIT {
     @Transactional
     public void createHighScore() throws Exception {
         int databaseSizeBeforeCreate = highScoreRepository.findAll().size();
-
         // Create the HighScore
         restHighScoreMockMvc.perform(post("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(highScore)))
             .andExpect(status().isCreated());
 
@@ -176,7 +148,7 @@ public class HighScoreResourceIT {
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restHighScoreMockMvc.perform(post("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(highScore)))
             .andExpect(status().isBadRequest());
 
@@ -195,8 +167,9 @@ public class HighScoreResourceIT {
 
         // Create the HighScore, which fails.
 
+
         restHighScoreMockMvc.perform(post("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(highScore)))
             .andExpect(status().isBadRequest());
 
@@ -213,8 +186,9 @@ public class HighScoreResourceIT {
 
         // Create the HighScore, which fails.
 
+
         restHighScoreMockMvc.perform(post("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(highScore)))
             .andExpect(status().isBadRequest());
 
@@ -251,7 +225,6 @@ public class HighScoreResourceIT {
             .andExpect(jsonPath("$.score").value(DEFAULT_SCORE))
             .andExpect(jsonPath("$.achievedDt").value(DEFAULT_ACHIEVED_DT.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingHighScore() throws Exception {
@@ -277,7 +250,7 @@ public class HighScoreResourceIT {
             .achievedDt(UPDATED_ACHIEVED_DT);
 
         restHighScoreMockMvc.perform(put("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(updatedHighScore)))
             .andExpect(status().isOk());
 
@@ -294,11 +267,9 @@ public class HighScoreResourceIT {
     public void updateNonExistingHighScore() throws Exception {
         int databaseSizeBeforeUpdate = highScoreRepository.findAll().size();
 
-        // Create the HighScore
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restHighScoreMockMvc.perform(put("/api/high-scores")
-            .contentType(TestUtil.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(highScore)))
             .andExpect(status().isBadRequest());
 
@@ -317,7 +288,7 @@ public class HighScoreResourceIT {
 
         // Delete the highScore
         restHighScoreMockMvc.perform(delete("/api/high-scores/{id}", highScore.getId())
-            .accept(TestUtil.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
